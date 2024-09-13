@@ -1,6 +1,7 @@
 
 import os
 import json
+import csv
 import tensorflow as tf
 import numpy as np
 
@@ -9,11 +10,18 @@ def load_json(file_path):
     with open(file_path, 'r') as f:
         return json.load(f)
 
-
 def save_json(data, target_file):
     with open(target_file, 'w') as f:
         json.dump(data, f, indent=2, sort_keys=True)
 
+def save_csv(data, csv_file_path):
+    with open(csv_file_path, mode='w', newline='', encoding='utf-8') as file:
+        if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
+            writer = csv.DictWriter(file, fieldnames=data[0].keys())
+            writer.writeheader()
+            writer.writerows(data)
+        else:
+            raise ValueError("data must be a list of dictionaries")
 
 def random_crop(img, crop_dims):
     h, w = img.shape[0], img.shape[1]
